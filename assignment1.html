@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignment 1 - Functional Dependency Analysis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Assignment 1 - Functional Dependency Analysis</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="assignment2.html">Assignment 2</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Overview</h2>
+      <p>This assignment analyzes functional dependencies in a course enrollment dataset. Each potential dependency was evaluated and classified as valid, invalid, or partially valid based on the data.</p>
+    </section>
+    <section>
+      <h2>Results</h2>
+      <p>The table below summarizes the dependencies and their validity:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Dependency</th>
+            <th>Validity</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>StudentID → StudentName</td><td>Valid</td><td>Each student ID maps to exactly one student name.</td></tr>
+          <tr><td>StudentID → Major</td><td>Valid</td><td>Each student maintains the same major throughout the dataset.</td></tr>
+          <tr><td>StudentID → GPA</td><td>Invalid</td><td>Students have varying GPAs across semesters.</td></tr>
+          <tr><td>CourseCode → CourseName</td><td>Valid</td><td>Each course code identifies a unique course name.</td></tr>
+          <tr><td>CourseCode → Credits</td><td>Valid</td><td>Credit hours are consistent per course.</td></tr>
+          <tr><td>InstructorID → InstructorName</td><td>Valid</td><td>Each instructor ID corresponds to one name.</td></tr>
+          <tr><td>CourseCode → InstructorID</td><td>Partially Valid</td><td>CS101 is taught by multiple instructors.</td></tr>
+          <tr><td>RoomNumber → ClassSize</td><td>Invalid</td><td>Room capacities vary across courses.</td></tr>
+          <tr><td>(StudentID, CourseCode) → Grade</td><td>Valid</td><td>Each student–course pair appears once.</td></tr>
+          <tr><td>(CourseCode, Semester) → InstructorID</td><td>Valid</td><td>Each course–semester combination has one instructor.</td></tr>
+          <tr><td>(CourseCode, Semester) → ClassSize</td><td>Valid</td><td>Class sizes are consistent per course-semester.</td></tr>
+          <tr><td>Major → GPA</td><td>Invalid</td><td>Students within the same major have different GPAs.</td></tr>
+          <tr><td>InstructorName → InstructorID</td><td>Valid</td><td>Names uniquely map to instructor IDs.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Samuel Ayodele</p>
+  </footer>
+</body>
+</html>
