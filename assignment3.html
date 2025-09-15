@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--
+  Assignment 3 – HTML5 & JavaScript Form
+
+  This page contains an interactive form that collects information
+  from the user, validates each field and displays a confirmation
+  view before sending the data via a mailto action.  The form fields
+  include name, address, phone number, email, birth date, a free‑form
+  message and a simple security question.  The interface is styled
+  to be pleasant to use and responsive on small screens.  All
+  validation is performed client‑side using HTML5 attributes and
+  JavaScript.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Form – Assignment 3</title>
+    <style>
+      /* Base reset and typography */
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f8fafc;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 1.5rem 0;
+        color: #0a3761;
+      }
+
+      /* Container for the form */
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .form-group input:invalid {
+        border-color: #e53e3e;
+      }
+
+      .form-group input:valid {
+        border-color: #38a169;
+      }
+
+      .inline-fields {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .inline-fields .form-group {
+        flex: 1;
+      }
+
+      .actions {
+        text-align: right;
+        margin-top: 1.5rem;
+      }
+
+      .actions button {
+        background: #0a3761;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .actions button:hover {
+        background: #0f4a86;
+      }
+
+      .confirmation {
+        display: none;
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      .confirmation h2 {
+        margin-top: 0;
+        color: #0a3761;
+      }
+
+      .confirmation ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .confirmation li {
+        margin-bottom: 0.5rem;
+      }
+
+      .confirmation .actions {
+        text-align: right;
+      }
+
+      @media (max-width: 480px) {
+        .inline-fields {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Contact Us</h1>
+    <!-- Form container -->
+    <div class="form-container" id="form-view">
+      <form id="contact-form" novalidate>
+        <!-- Name fields -->
+        <div class="inline-fields">
+          <div class="form-group">
+            <label for="first-name">First Name<span aria-hidden="true" style="color: red">*</span></label>
+            <input
+              type="text"
+              id="first-name"
+              name="firstName"
+              pattern="\s*\S.*"
+              required
+              placeholder="e.g., Samuel"
+            />
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last Name<span aria-hidden="true" style="color: red">*</span></label>
+            <input
+              type="text"
+              id="last-name"
+              name="lastName"
+              pattern="\s*\S.*"
+              required
+              placeholder="e.g., Ayodele"
+            />
+          </div>
+        </div>
+
+        <!-- Address fields -->
+        <div class="form-group">
+          <label for="address">Street Address<span aria-hidden="true" style="color: red">*</span></label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            pattern="\s*\S.*"
+            required
+            placeholder="1400 Jackson Avenue"
+          />
+        </div>
+        <div class="inline-fields">
+          <div class="form-group">
+            <label for="city">City<span aria-hidden="true" style="color: red">*</span></label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              pattern="\s*\S.*"
+              required
+              placeholder="Daytona Beach"
+            />
+          </div>
+          <div class="form-group">
+            <label for="state">State<span aria-hidden="true" style="color: red">*</span></label>
+            <input
+              type="text"
+              id="state"
+              name="state"
+              pattern="\s*\S.*"
+              required
+              placeholder="Florida"
+            />
+          </div>
+          <div class="form-group">
+            <label for="zip">Zip Code<span aria-hidden="true" style="color: red">*</span></label>
+            <input
+              type="text"
+              id="zip"
+              name="zip"
+              pattern="\d{5}(-\d{4})?"
+              required
+              placeholder="e.g., 32114"
+            />
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone">Phone Number<span aria-hidden="true" style="color: red">*</span></label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            pattern="\(\d{3}\) \d{3}-\d{4}"
+            required
+            placeholder="(386) 334-2437"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email Address<span aria-hidden="true" style="color: red">*</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="samuel123ayo@icloud.com"
+          />
+        </div>
+
+        <!-- Birthdate -->
+        <div class="form-group">
+          <label for="birthdate">Birth Date<span aria-hidden="true" style="color: red">*</span></label>
+          <input
+            type="date"
+            id="birthdate"
+            name="birthdate"
+            required
+          />
+        </div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <label for="message">Message<span aria-hidden="true" style="color: red">*</span></label>
+          <textarea
+            id="message"
+            name="message"
+            rows="4"
+            required
+            placeholder="Enter a message..."
+          ></textarea>
+        </div>
+
+        <!-- Security question -->
+        <div class="form-group">
+          <label for="security">Security Question: What was the elementary school you attended?<span aria-hidden="true" style="color: red">*</span></label>
+          <input
+            type="text"
+            id="security"
+            name="security"
+            required
+            placeholder="Answer here..."
+          />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Confirmation view -->
+    <div class="confirmation" id="confirmation-view">
+      <h2>Please Confirm Your Details</h2>
+      <ul id="confirmation-list"></ul>
+      <div class="actions">
+        <button id="edit-btn" type="button">Edit</button>
+        <button id="send-btn" type="button">Send</button>
+      </div>
+    </div>
+
+    <script>
+      // Set maximum date for birthdate to today (no future birthdays)
+      document.addEventListener('DOMContentLoaded', () => {
+        const birthdateInput = document.getElementById('birthdate');
+        const today = new Date().toISOString().split('T')[0];
+        birthdateInput.max = today;
+      });
+
+      // Apply a phone number mask on input
+      const phoneInput = document.getElementById('phone');
+      phoneInput.addEventListener('input', (e) => {
+        let digits = e.target.value.replace(/\D/g, '');
+        // Limit to 10 digits
+        digits = digits.substring(0, 10);
+        let formatted = '';
+        if (digits.length > 0) {
+          formatted += '(' + digits.substring(0, Math.min(3, digits.length));
+        }
+        if (digits.length >= 4) {
+          formatted += ') ' + digits.substring(3, Math.min(6, digits.length));
+        }
+        if (digits.length >= 7) {
+          formatted += '-' + digits.substring(6, 10);
+        }
+        e.target.value = formatted;
+      });
+
+      // Reference to form and confirmation elements
+      const form = document.getElementById('contact-form');
+      const formView = document.getElementById('form-view');
+      const confirmationView = document.getElementById('confirmation-view');
+      const confirmationList = document.getElementById('confirmation-list');
+      const editBtn = document.getElementById('edit-btn');
+      const sendBtn = document.getElementById('send-btn');
+
+      // On form submit – show confirmation view instead of sending immediately
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        // Ensure built-in HTML validation passes
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        // Build list of submitted values
+        const data = new FormData(form);
+        const entries = Object.fromEntries(data.entries());
+        // Simple security question validation
+        const expectedAnswer = 'adams elementary';
+        if (entries.security.trim().toLowerCase() !== expectedAnswer) {
+          alert('Security answer is incorrect. Please try again.');
+          return;
+        }
+        // Populate confirmation list
+        confirmationList.innerHTML = '';
+        const prettyLabels = {
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          address: 'Street Address',
+          city: 'City',
+          state: 'State',
+          zip: 'Zip Code',
+          phone: 'Phone Number',
+          email: 'Email Address',
+          birthdate: 'Birth Date',
+          message: 'Message',
+          security: 'Security Answer'
+        };
+        for (const key in entries) {
+          const li = document.createElement('li');
+          const label = prettyLabels[key] || key;
+          let value = entries[key];
+          if (key === 'birthdate' && value) {
+            const dateObj = new Date(value);
+            value = dateObj.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          }
+          li.textContent = `${label}: ${value}`;
+          confirmationList.appendChild(li);
+        }
+        // Show confirmation view and hide form view
+        formView.style.display = 'none';
+        confirmationView.style.display = 'block';
+      });
+
+      // Edit button returns user to the form
+      editBtn.addEventListener('click', () => {
+        confirmationView.style.display = 'none';
+        formView.style.display = 'block';
+      });
+
+      // Send button – change action to mailto and submit
+      sendBtn.addEventListener('click', () => {
+        // Set mailto action; adjust email as needed
+        const recipient = 'samuel123ayo@icloud.com';
+        form.setAttribute('action', `mailto:${recipient}`);
+        form.setAttribute('method', 'POST');
+        form.setAttribute('enctype', 'text/plain');
+        // Use hidden field to include security answer in mail
+        form.submit();
+        // Optionally show a thank you message or reset form after send
+        confirmationView.innerHTML = '<h2>Thank you! Your message has been sent.</h2>';
+      });
+    </script>
+  </body>
+</html>
